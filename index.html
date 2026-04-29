@@ -28,6 +28,21 @@ body{
     padding:12px;
 }
 
+/* CONTROLE DE TELAS */
+.tela{
+    display:none;
+}
+.tela.active{
+    display:block;
+}
+
+/* MAIN SEMPRE FLEX */
+#main{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+}
+
 /* HEADER */
 .topo{
     display:flex;
@@ -92,7 +107,7 @@ button:hover{
     font-size:16px;
 }
 
-/* LINHA DE PAREDES */
+/* LINHAS */
 .linha{
     display:flex;
     gap:10px;
@@ -117,7 +132,7 @@ button:hover{
     transform:scale(1.02);
 }
 
-/* VISUALIZAÇÃO */
+/* VISUAL */
 .img-parede{
     margin-top:15px;
     background:#020617;
@@ -128,7 +143,6 @@ button:hover{
 
 .img-parede img{
     width:100%;
-    height:auto;
     object-fit:contain;
 }
 
@@ -162,7 +176,7 @@ button:hover{
 <div class="container">
 
 <!-- SEGMENTOS -->
-<div id="main">
+<div id="main" class="tela active">
     <div class="segmento" onclick="abrirLista(1)">
         <img src="seg1.png">
         <span>Segmento 1</span>
@@ -185,7 +199,7 @@ button:hover{
 </div>
 
 <!-- LISTA -->
-<div id="lista" style="display:none;">
+<div id="lista" class="tela">
     <div class="topo">
         <button onclick="voltar()">⬅ Voltar</button>
         <h2 id="titulo"></h2>
@@ -195,7 +209,7 @@ button:hover{
 </div>
 
 <!-- VISUAL -->
-<div id="visual" style="display:none;">
+<div id="visual" class="tela">
     <div class="topo">
         <button onclick="voltarLista()">⬅ Lista</button>
         <h2 id="tituloParede"></h2>
@@ -298,36 +312,30 @@ C: [
 
 };
 
-let segmentoAtual = 0;
-
-/* ABRIR */
-function abrirLista(seg){
-    segmentoAtual = seg;
-
-    document.getElementById("main").style.display = "none";
-    document.getElementById("lista").style.display = "block";
-
-    document.getElementById("titulo").innerText = "Segmento " + seg;
-
-    renderLista();
+function trocarTela(id){
+    document.querySelectorAll(".tela").forEach(t=>t.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
 }
 
-/* RENDER */
+function abrirLista(seg){
+    window.segmentoAtual = seg;
+    document.getElementById("titulo").innerText = "Segmento " + seg;
+    renderLista();
+    trocarTela("lista");
+}
+
 function renderLista(){
     let seg = segmentos[segmentoAtual];
     let html = "";
 
     for(let parte in seg){
-
-        html += `<div class="parte">
-        <h3>Parte ${parte}</h3>`;
+        html += `<div class="parte"><h3>Parte ${parte}</h3>`;
 
         seg[parte].forEach(linha=>{
-
             html += `<div class="linha">`;
 
             linha.forEach(p=>{
-                if(p !== ""){
+                if(p){
                     html += `<div class="parede-btn" onclick="abrirParede('${p}')">
                         ${formatar(p)}
                     </div>`;
@@ -345,31 +353,24 @@ function renderLista(){
     document.getElementById("conteudoLista").innerHTML = html;
 }
 
-/* FORMATAR */
 function formatar(id){
     let num = id.match(/\d+/)[0];
     let lado = id.includes("e") ? "E" : id.includes("d") ? "D" : "";
     return `Parede ${num} ${lado}`;
 }
 
-/* ABRIR PAREDE */
 function abrirParede(id){
-    document.getElementById("lista").style.display = "none";
-    document.getElementById("visual").style.display = "block";
-
     document.getElementById("tituloParede").innerText = formatar(id);
     document.getElementById("imgParede").src = id + ".png";
+    trocarTela("visual");
 }
 
-/* VOLTAR */
 function voltar(){
-    document.getElementById("main").style.display = "flex";
-    document.getElementById("lista").style.display = "none";
+    trocarTela("main");
 }
 
 function voltarLista(){
-    document.getElementById("lista").style.display = "block";
-    document.getElementById("visual").style.display = "none";
+    trocarTela("lista");
 }
 
 </script>
