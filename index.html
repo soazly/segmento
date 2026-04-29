@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Paredes</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* BASE */
+body{
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:#0f172a;
+    color:#e2e8f0;
+}
+
+/* CONTAINER */
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:12px;
+}
+
+/* HEADER */
+.topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.topo h2{
+    font-size:18px;
+    font-weight:600;
+}
+
+/* BOTÕES */
+button{
+    background:#1e293b;
+    color:white;
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#334155;
+}
+
+/* SEGMENTOS */
+.segmento{
+    position:relative;
+    border-radius:14px;
+    overflow:hidden;
+    cursor:pointer;
+    margin-bottom:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+
+.segmento img{
+    width:100%;
+    display:block;
+}
+
+.segmento span{
+    position:absolute;
+    bottom:10px;
+    left:10px;
+    background:rgba(0,0,0,0.6);
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+/* LISTA */
+.parte{
+    margin-top:20px;
+}
+
+.parte h3{
+    margin-bottom:10px;
+    color:#22c55e;
+    font-size:16px;
+}
+
+/* LINHA DE PAREDES */
+.linha{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+/* BOTÃO PAREDE */
+.parede-btn{
+    flex:1;
+    text-align:center;
+    padding:14px;
+    border-radius:12px;
+    background:#1e293b;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+    border:1px solid #334155;
+}
+
+.parede-btn:hover{
+    background:#334155;
+    transform:scale(1.02);
+}
+
+/* VISUALIZAÇÃO */
+.img-parede{
+    margin-top:15px;
+    background:#020617;
+    border-radius:12px;
+    padding:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+
+.img-parede img{
+    width:100%;
+    height:auto;
+    object-fit:contain;
+}
+
+/* RESPONSIVO */
+@media (min-width:600px){
+    .parede-btn{
+        padding:16px;
+        font-size:15px;
+    }
+
+    .topo h2{
+        font-size:20px;
+    }
+}
+
+@media (min-width:900px){
+    .container{
+        max-width:1100px;
+    }
+
+    .linha{
+        gap:15px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- SEGMENTOS -->
+<div id="main">
+    <div class="segmento" onclick="abrirLista(1)">
+        <img src="seg1.png">
+        <span>Segmento 1</span>
+    </div>
+
+    <div class="segmento" onclick="abrirLista(2)">
+        <img src="seg2.png">
+        <span>Segmento 2</span>
+    </div>
+
+    <div class="segmento" onclick="abrirLista(3)">
+        <img src="seg3.png">
+        <span>Segmento 3</span>
+    </div>
+
+    <div class="segmento" onclick="abrirLista(4)">
+        <img src="seg4.png">
+        <span>Segmento 4</span>
+    </div>
+</div>
+
+<!-- LISTA -->
+<div id="lista" style="display:none;">
+    <div class="topo">
+        <button onclick="voltar()">⬅ Voltar</button>
+        <h2 id="titulo"></h2>
+    </div>
+
+    <div id="conteudoLista"></div>
+</div>
+
+<!-- VISUAL -->
+<div id="visual" style="display:none;">
+    <div class="topo">
+        <button onclick="voltarLista()">⬅ Lista</button>
+        <h2 id="tituloParede"></h2>
+    </div>
+
+    <div class="img-parede">
+        <img id="imgParede">
+    </div>
+</div>
+
+</div>
+
+<script>
+
+const segmentos = {
+
+1: {
+A: [
+["p7e","p3e"],
+["p15e","p5"],
+["p16e","p8"]
+],
+B: [
+["p2","p12e"],
+["p25e","p12d"],
+["p14","p13e"],
+["","p13d"],
+["","p4"],
+["","p4"]
+],
+C: [
+["p10e","p1"],
+["p11e","p6"],
+["","p9e"]
+]
+},
+
+2: {
+A: [
+["p7d","p3d"],
+["p15d","p5"],
+["p17e","p26"]
+],
+B: [
+["p2","p12e"],
+["p25d","p12d"],
+["p14","p13e"],
+["","p13d"],
+["","p4"],
+["","p4"]
+],
+C: [
+["p10d","p1"],
+["p11d","p6"],
+["","p9d"]
+]
+},
+
+3: {
+A: [
+["p7d","p3d"],
+["p15d","p5"],
+["p16d","p8"]
+],
+B: [
+["p2","p12e"],
+["p25d","p12d"],
+["p14","p13e"],
+["","p13d"],
+["","p4"],
+["","p4"]
+],
+C: [
+["p10d","p1"],
+["p11d","p6"],
+["","p9d"]
+]
+},
+
+4: {
+A: [
+["p7e","p3e"],
+["p15e","p5"],
+["p17d","p26"]
+],
+B: [
+["p2","p12e"],
+["p25e","p12d"],
+["p14","p13e"],
+["","p13d"],
+["","p4"],
+["","p4"]
+],
+C: [
+["p10e","p1"],
+["p11e","p6"],
+["","p9e"]
+]
+}
+
+};
+
+let segmentoAtual = 0;
+
+/* ABRIR */
+function abrirLista(seg){
+    segmentoAtual = seg;
+
+    document.getElementById("main").style.display = "none";
+    document.getElementById("lista").style.display = "block";
+
+    document.getElementById("titulo").innerText = "Segmento " + seg;
+
+    renderLista();
+}
+
+/* RENDER */
+function renderLista(){
+    let seg = segmentos[segmentoAtual];
+    let html = "";
+
+    for(let parte in seg){
+
+        html += `<div class="parte">
+        <h3>Parte ${parte}</h3>`;
+
+        seg[parte].forEach(linha=>{
+
+            html += `<div class="linha">`;
+
+            linha.forEach(p=>{
+                if(p !== ""){
+                    html += `<div class="parede-btn" onclick="abrirParede('${p}')">
+                        ${formatar(p)}
+                    </div>`;
+                } else {
+                    html += `<div style="flex:1"></div>`;
+                }
+            });
+
+            html += `</div>`;
+        });
+
+        html += `</div>`;
+    }
+
+    document.getElementById("conteudoLista").innerHTML = html;
+}
+
+/* FORMATAR */
+function formatar(id){
+    let num = id.match(/\d+/)[0];
+    let lado = id.includes("e") ? "E" : id.includes("d") ? "D" : "";
+    return `Parede ${num} ${lado}`;
+}
+
+/* ABRIR PAREDE */
+function abrirParede(id){
+    document.getElementById("lista").style.display = "none";
+    document.getElementById("visual").style.display = "block";
+
+    document.getElementById("tituloParede").innerText = formatar(id);
+    document.getElementById("imgParede").src = id + ".png";
+}
+
+/* VOLTAR */
+function voltar(){
+    document.getElementById("main").style.display = "flex";
+    document.getElementById("lista").style.display = "none";
+}
+
+function voltarLista(){
+    document.getElementById("lista").style.display = "block";
+    document.getElementById("visual").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
